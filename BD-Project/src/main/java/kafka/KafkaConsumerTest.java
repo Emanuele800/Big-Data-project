@@ -44,17 +44,18 @@ public class KafkaConsumerTest{
 	static void runConsumer() throws InterruptedException {
 		final Consumer<Long, String> consumer = createConsumer();
 
-		final int giveUp = 100;   int noRecordsCount = 0;
+		final int giveUp = 5000;   int noRecordsCount = 0;
 
 		while (true) {
 			final ConsumerRecords<Long, String> consumerRecords =
 					consumer.poll(1000);
-
+            
 			if (consumerRecords.count()==0) {
 				noRecordsCount++;
 				if (noRecordsCount > giveUp) break;
 				else continue;
 			}
+			
 
 			MongoClient client = new MongoClient("localhost", 27017);
 			MongoDatabase db = client.getDatabase("github_events");
@@ -68,12 +69,6 @@ public class KafkaConsumerTest{
 						record.partition(), record.offset());
 			});
 
-
-			consumerRecords.forEach(record -> {
-				System.out.printf("Consumer Record:(%d, %s, %d, %d)\n",
-						record.key(), record.value(),
-						record.partition(), record.offset());
-			});
 
 			consumer.commitAsync();
 		}
