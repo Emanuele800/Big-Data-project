@@ -25,7 +25,8 @@ public class KafkaStorm {
 
 		TopologyBuilder builder = new TopologyBuilder();
 		builder.setSpout("kafka-spout", kafkaSpout);
-		builder.setBolt("kafka-bolt", new KafkaBolt()).shuffleGrouping("kafka-spout");
+		builder.setBolt("mail-extractor-bolt", new MailExtractorBolt()).shuffleGrouping("kafka-spout");
+		builder.setBolt("mail-sender-bolt", new MailSenderBolt()).shuffleGrouping("mail-extractor-bolt");
 
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("KafkaStorm", config, builder.createTopology());
