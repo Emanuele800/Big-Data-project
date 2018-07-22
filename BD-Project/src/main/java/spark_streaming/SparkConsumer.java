@@ -21,7 +21,7 @@ public class SparkConsumer {
 
 	public static void main(String[] args) throws InterruptedException {
 		SparkConf conf = new SparkConf().setMaster("local[2]").setAppName("SparkConsumerKafka");
-				//.setMaster("local[*]");
+		//.setMaster("local[*]");
 		//JavaSparkContext sc = new JavaSparkContext(conf);
 		//JavaStreamingContext ssc = new JavaStreamingContext(sc, new Duration(2000));
 		JavaStreamingContext jssc = new JavaStreamingContext(conf, Durations.seconds(2));
@@ -39,11 +39,21 @@ public class SparkConsumer {
 		final JavaInputDStream<ConsumerRecord<String, String>> stream =
 				KafkaUtils.createDirectStream(jssc,	LocationStrategies.PreferConsistent(), ConsumerStrategies.<String, String>Subscribe(topics, kafkaParams));
 
+		stream.foreachRDD(rdd ->{            
+			rdd.foreachPartition(item ->{
+				while (item.hasNext()) {    
+					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>"+item.next());
+				}
+			}
+					);
+		});
+
+		/*
 		stream.foreachRDD(rdd -> {
 			System.out.println("--- New RDD with " + rdd.partitions().size()
 					+ " partitions and " + rdd.count() + " records");
-			rdd.foreach(record -> System.out.println(record));
-		});
+			//rdd.foreach(record -> System.out.println("Record:" + record.toString()));
+		});  */
 
 		jssc.start();
 		jssc.awaitTermination();
