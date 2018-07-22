@@ -13,7 +13,7 @@ import com.mongodb.client.MongoDatabase;
 import java.util.Collections;
 import java.util.Properties;
 
-public class KafkaConsumerTest{
+public class KafkaConsumerMongo{
 
 	private final static String TOPIC = "github-stream-output";
 	private final static String BOOTSTRAP_SERVERS =
