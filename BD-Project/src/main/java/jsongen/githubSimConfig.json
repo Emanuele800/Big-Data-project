@@ -1,0 +1,15 @@
+{
+    "workflows": [{
+            "workflowName": "git",
+            "workflowFilename": "githubWorkflow.json"
+        }],
+    "producers": [{
+        "type": "kafka",
+        "broker.server": "0.0.0.0",
+        "broker.port": 9092,
+        "topic": "github-stream-input",
+        "flatten": false,
+        "sync": false
+
+    }]
+}
